@@ -10,22 +10,29 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-    private static int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 1;
+    private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 1;
+
+    private static final boolean PERMISSION_REQUEST_FRAGMENT = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+        if (PERMISSION_REQUEST_FRAGMENT) {
+            getFragmentManager().beginTransaction().add(new PermissionRequestFragment(), "fragment").commit();
         } else {
-            showLineNumber();
+            if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+            } else {
+                showLineNumber();
+            }
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        new Exception().printStackTrace();
         if (MY_PERMISSIONS_REQUEST_READ_PHONE_STATE == requestCode) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showLineNumber();
